@@ -55,13 +55,7 @@ class Building(object):
             for j in range(self.y,self.y+sizey):
                 village.village[i][j] = color +  symbole
 
-    def reset_color(self):
-        if self.destroyed:
-            return
-        for i in range(self.x,self.x+self.sizex):
-            for j in range(self.y,self.y+self.sizey):
-                village.village[i][j] = self.color +  self.symbole
-        
+       
 
     
     
@@ -100,7 +94,7 @@ class canon(Building):
             for j in range(y1-self.range1,y1+self.range1+1):
                 if(j>=village.m or j<0 and village.village_object[i][j] == self.color+self.symbole):
                     continue
-                if(village.village[i][j][-1]=='K' or village.village[i][j][-1]=="B" or village.village[i][j][-1]=="A" or village.village[i][j][-1]=="Q"):
+                if(village.village[i][j][-1]=='K' or village.village[i][j][-1]=="B"):
                     if((not village.village_object[i][j].dead) and village.village_object[i][j].current_health>self.damage):
 
                            
@@ -119,83 +113,29 @@ class canon(Building):
                 break
 
         
-   
-        
-
-class wizard_Tower(Building):
-    sizex = 3
-    sizey = 3
-    symbole ="\u2388"
-    range1 = 7
-    damage = 5
-    center=[1,1]
-    def shoot(self):
+    def reset_color(self):
         if self.destroyed:
             return
-        x1=self.x+1
-        y1=self.y+1
-        shooted =0
-        for i in range(x1-self.range1,x1+self.range1+1):
-            if(i>=village.n or i<0 ):
-                continue
-            for j in range(y1-self.range1,y1+self.range1+1):
-                if(j>=village.m or j<0 and village.village_object[i][j] == self.color+self.symbole):
-                    continue
-                if(village.village[i][j][-1]=='K' or village.village[i][j][-1]=="B" or village.village[i][j][-1]=="A" or village.village[i][j][-1]=="Q" or village.village[i][j][-1]=="\u03A6"):
-                    if((not village.village_object[i][j].dead) and village.village_object[i][j].current_health>self.damage):
-                        #change wizard color
-                        for r1 in range(self.x,self.x+self.sizex):
-                            for r2 in range(self.y,self.y+self.sizey):
-                                village.village[r1][r2] = Fore.CYAN +  self.symbole
-
-                        village.village_object[i][j].current_health-= self.damage
-                    else:
-                        village.village_object[i][j].current_health=0
-                        village.village_object[i][j].dead=1
-                    shooted =1 
-
-                    #check in 3X3 grid due to AOE
-                    for g in range(i-1,i+2):
-                        for h in range(j-1,j+2):
-                            if(h>=village.m or h<0 and village.village_object[g][h] == self.color+self.symbole):
-                                continue
-                            if(village.village[g][h][-1]=='K' or village.village[g][h][-1]=="B" or village.village[g][h][-1]=="A" or village.village[g][h][-1]=="Q" or village.village[g][h][-1]=="\u03A6"):
-                                if((not village.village_object[g][h].dead) and village.village_object[g][h].current_health>self.damage):
-                                    #change wizard color
-                                    for r1 in range(self.x,self.x+self.sizex):
-                                        for r2 in range(self.y,self.y+self.sizey):
-                                            village.village[r1][r2] = Fore.CYAN +  self.symbole
-
-                                    village.village_object[g][h].current_health-= self.damage
-                                else:
-                                    village.village_object[g][h].current_health=0
-                                    village.village_object[g][h].dead=1
-                                
+        for i in range(self.x,self.x+self.sizex):
+            for j in range(self.y,self.y+self.sizey):
+                village.village[i][j] = self.color +  self.symbole
 
 
-                    break
-            if(shooted):
-                break
-
-  
 
 townHall = Townhall((village.n-3)//2,(village.m-4)//2,50)
 canon1 = canon((village.n)//2,(village.m)//4,30)
 canon2 = canon(village.n//4,(village.m)//2,30)
 canon3 = canon(3*village.n//4,(village.m)//2,30)
-tower1 = wizard_Tower(2*village.n//5,2*(village.m)//3,30)
-tower2 = wizard_Tower(2*village.n//3,(village.m)//3,30)
-
 hut1 =  Hut(village.n//4,village.m//4,40)
 hut2 =  Hut(3*village.n//4,village.m//4,40)
 hut3 =  Hut(village.n//4,3*village.m//4,40)
 hut4 =  Hut(3*village.n//4,3*village.m//4,40)
 hut5 =  Hut(village.n//2,3*village.m//4,40)
 
-build = [townHall,canon1,canon2,canon3,tower1,tower2,hut1,hut2,hut3,hut4,hut5]
-defence_build = [canon1,canon2,canon3,tower1,tower2]
+build = [townHall,canon1,canon2,canon3,hut1,hut2,hut3,hut4,hut5]
 
-#walls
+
+#wallls
 walls = []
 i = (village.n-3)//2-2
 for j in range((village.m-4)//2-4,(village.m-4)//2+8):

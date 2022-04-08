@@ -2,7 +2,7 @@ from sys import stdout
 from colorama import Fore
 from colorama import init as colorama_init
 import copy
-n= 30
+n= 25
 m= 100
 village= []
 village_object=[]
