@@ -1,5 +1,6 @@
 
 
+from dataclasses import replace
 from operator import truediv
 from re import I
 import src.village as village
@@ -15,6 +16,7 @@ s1 =[0,village.n-1]
 s2 =[village.n-1,0]
 s3= [village.n-1,village.m-1]
 class troop():
+
     def __init__(self,health,speed=1,i=0,j=0):
         self.health = health
         self.current_health = self.health
@@ -22,6 +24,8 @@ class troop():
         self.j=j
         self.dead =0
         self.step = speed
+        self.replaced = Fore.LIGHTWHITE_EX  + "\u2592" 
+        self.replaced_obj =  Fore.LIGHTWHITE_EX  + "\u2592" 
         
 
     def check_boundry(self,x,y):
@@ -70,13 +74,15 @@ class troop():
         village.village[self.i][self.j]= self.color+symbole
         village.village_object[self.i][self.j] =self
 
-
     def move(self):
         if not self.dead:
             village.village[self.i][self.j] = Fore.LIGHTWHITE_EX  + "\u2592" 
             village.village_object[self.i][self.j] = Fore.LIGHTWHITE_EX  + "\u2592" 
             self.change_position()
             village.village_object[self.i][self.j] = self
+    
+   
+            
     
 class king(troop):
     damage = 10
@@ -183,6 +189,21 @@ class archerQueen(troop):
             
         for x in arr:
             x.current_health-=self.damage
+    
+    def Eagle_attack(self):
+        arr= set()
+        for i in range(self.i-4+archerQueen.last_moved_direc[0]*16,self.i+4+1+archerQueen.last_moved_direc[0]*16):
+            for j in range(self.j-4+archerQueen.last_moved_direc[1]*16,self.j+4+1+archerQueen.last_moved_direc[1]*16):
+                if(self.check_boundry(i,j)):
+                    obj =village.village_object[i][j]
+                    represent  = village.village[i][j]
+
+                if(self.check_boundry(i,j) and obj != Fore.LIGHTWHITE_EX  + "\u2592" and represent[-1]!='B'and represent[-1]!='K' and represent[-1]!='A' and represent[-1]!="\u03A6"):
+                    #print(village.village_object[self.i][self.j+1].symbole)
+                    arr.add(obj)
+            
+        for x in arr:
+            x.current_health-=self.damage
 
 
     
@@ -198,7 +219,7 @@ class barberian(troop):
     color = Fore.BLACK
     barb_obj=[]
     speed = 1
-    max_barberian = 7
+    max_barberian = 6
     heal=50
     symbole = "B"
     
@@ -232,8 +253,8 @@ class archers(troop):
     speed = barberian.speed*2
     color = Fore.BLACK
     archer_obj=[]
-    damage_range = 9 
-    max_archers = 7 
+    damage_range = 6 
+    max_archers = 6 
     symbole = "A"
 
     def change_position(self):
@@ -295,7 +316,7 @@ class ballons(troop):
     color = Fore.BLACK
     ballon_obj=[]
     damage_range = 9 
-    max_ballons= 7 
+    max_ballons= 3
     symbole = "\u03A6"
 
     def change_position(self):
@@ -337,6 +358,8 @@ class ballons(troop):
         for _ in range(0,self.step):
             min1=village.n*village.m 
             cord = []
+
+            # instead of making two list could have goven weights to defece_buildings higher than normal and comepare that too...!
             for b in building.defence_build:
                 if not b.destroyed:
                     dist = math.sqrt((b.x+b.center[0]-self.i)**2 + (b.y+b.center[1]-self.j)**2)
@@ -358,6 +381,23 @@ class ballons(troop):
                 return
             elif(cord[0]==self.i and cord[1]==self.j):
                 closer_build.current_health-=self.damage
+
+    def move(self):
+        if not self.dead:
+            if((self.replaced_obj in building.build and not self.replaced_obj.destroyed )or (self.replaced[5:] in ['A','Q','K','B',ballons.symbole]  and  self.replaced_obj.dead) ):
+                village.village[self.i][self.j] = self.replaced
+                village.village_object[self.i][self.j] = self.replaced_obj
+            else:
+                village.village[self.i][self.j] = Fore.LIGHTWHITE_EX  + "\u2592" 
+                village.village_object[self.i][self.j] =  Fore.LIGHTWHITE_EX  + "\u2592" 
+            
+            self.change_position()
+            temp1=village.village[self.i][self.j]
+            temp2 = village.village_object[self.i][self.j]
+            village.village_object[self.i][self.j] = self
+            village.village[self.i][self.j] = self.symbole
+            self.replaced = temp1
+            self.replaced_obj = temp2
 
 
 
@@ -403,6 +443,25 @@ def spawn(key):
        ballons.ballon_obj.append(a)
 k = king(100) 
 q = archerQueen(100)
+def reset_troops():
+    k.current_health = k.health
+    q.current_health = q.health
+    q.i =0
+    q.j=0
+    q.step =1
+    k.step =1
+    k.i=1
+    k.j=1
+    k.dead=0
+    q.dead=0
+    ballons.ballon_obj =[]
+    archers.archer_obj =[]
+    barberian.barb_obj =[]
+    
+
+
+
+    
 
 
 

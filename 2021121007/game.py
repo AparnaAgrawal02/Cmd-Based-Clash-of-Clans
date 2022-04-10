@@ -50,10 +50,10 @@ while True:
 
     #barberians
     for barb in barb_obj:
+        barb.display()
         if(barb.dead==0):
             lost = 0
             barb.move()
-            barb.display()
             barb.attack() 
     #lost condition
     if(len(barb_obj)== max_barberian and lost):
@@ -68,6 +68,7 @@ while True:
         break
     spawn(key)
     sp.which_spell(key)
+    if 
     if(k.dead==0):
         k.move(key)
         if(key == " "):

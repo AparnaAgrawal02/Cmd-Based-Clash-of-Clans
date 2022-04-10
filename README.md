@@ -1,4 +1,18 @@
 # Game
+HOW TO PLAY:
+0,1,2 to deploy barberians 
+3,4,5 to deploy archers
+6,7,8 to deploy ballons
+
+queen has two attacks
+    for normal attack press space
+    for e Archer Queen’s Eagle Arrow  press x
+king has two attacks
+    for normal attack press space
+    for axe_attack press x
+    
+
+
 ## Game Specifications:
 ### Village (20):
     There will be a map of n*m dimensions representing your village level. Each village must have the
