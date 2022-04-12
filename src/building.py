@@ -191,23 +191,26 @@ hut3 =  Hut(village.n//4,3*village.m//4,40)
 hut4 =  Hut(3*village.n//4,3*village.m//4,40)
 hut5 =  Hut(village.n//2,3*village.m//4,40)
 
-build = [townHall,hut1,hut2,hut3,hut4,hut5]
-all_defence_build = [canon1,canon2,canon3,canon4,tower1,tower2,tower3,tower4]
-defence_build = []
-def level(x,build):
-    if(x=='1'):
-        defence_build = all_defence_build[:2]+all_defence_build[4:6]
-        build +=defence_build
-    elif(x=='2'):
-        defence_build = all_defence_build[:3]+all_defence_build[4:7]
-        build +=defence_build
 
-    elif(x=='3'):
+
+build = [townHall,hut1,hut2,hut3,hut4,hut5]
+build1 = [townHall,hut1,hut2,hut3,hut4,hut5]
+all_defence_build = [canon1,canon2,canon3,canon4,tower1,tower2,tower3,tower4]
+defence_build =  []
+def level(x):
+    if(x==1):
+        defence_build = all_defence_build[:2]+all_defence_build[4:6]
+        build =build1+defence_build
+    elif(x==2):
+        defence_build = all_defence_build[:3]+all_defence_build[4:7]
+        build =build1 + defence_build
+
+    elif(x==3):
         defence_build = all_defence_build[:4]+all_defence_build[4:8]
-        build +=defence_build
+        build = build1 + defence_build
     else:
         defence_build = all_defence_build[:4]+all_defence_build[4:8]
-        build +=defence_build
+        build = build1 + defence_build
 
     return [defence_build,build]
 

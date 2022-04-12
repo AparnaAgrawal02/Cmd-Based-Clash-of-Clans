@@ -14,17 +14,31 @@ from src.troops import *
 rep = []
 f=0
 time1= time.time()
-king_=0
+
 lev = 1
-[defence_build,build] = level(lev,build)
-c= input("press K if you want king else press Q")
-if c=="k" or c=="K":
-    king_=1
+key =0
 defeat = False
 Eattack =0
+
+# added sequential levels
 while lev !=4:
-    if(defeat):
+    #defeat or quit
+    if(defeat or key =='q'):
         break
+
+    king_=0
+    #increase the number of building as the level increases
+    [defence_build,build] = level(lev)
+    Update_build(build,defence_build)
+
+    #chosse king/queen
+    c= input("press K if you want king else press Q")
+    if c=="k" or c=="K":
+        king_=1
+    
+    #for replay append
+    rep.append(c) 
+    #start the game
     while True:
         print("LEVEL:"+str(lev))
         win =1
@@ -37,6 +51,7 @@ while lev !=4:
             #print(b.symbole)
             b.display(b.sizex,b.sizey,b.symbole)
         
+        #reset if won the current level
         if(win ==1 and lev !=3):
             win=0
             lev+=1
@@ -62,11 +77,10 @@ while lev !=4:
         for w in  walls:
             w.display(w.sizex,w.sizey,w.symbole)
 
-        
+        #shoot
         if(f==1):
             for db in defence_build:
                 db.shoot()
-        #Display village
 
         #barberians
         for barb in barberian.barb_obj:
@@ -93,10 +107,9 @@ while lev !=4:
                 ballon.attack()
             ballon.display(ballons.symbole) 
 
+        #Display village
         village.display_Village()
 
-        for db in defence_build:
-                db.shoot()
 
         #display king's health
         if king_:
@@ -104,22 +117,28 @@ while lev !=4:
         else:
             q.display_health()
 
-        
-
         #lost condition
         if(len(barberian.barb_obj)== barberian.max_barberian and len(archers.archer_obj)== archers.max_archers and len(ballons.ballon_obj)== ballons.max_ballons and lost):
             print("***Defeat****")
             defeat =True
             break
+
         #input
         key = input_to(Get())
         rep.append(time.time()-time1)
         time1 =time.time()
         rep.append(key) 
+
+        # quit
         if key == 'q':
             break
+
+        #spawn troops
         spawn(key)
+        #spells
         sp.which_spell(key)
+
+        #move king 
         if (king_):
             if(k.dead==0):
                 k.move(key)
@@ -127,7 +146,7 @@ while lev !=4:
                     k.attack()
                 elif(key == "x"  or key =="X"):
                     k.axe_attack()
-
+        #move queen
         else:
             Etime =0
             if(q.dead==0):
@@ -136,10 +155,13 @@ while lev !=4:
                     q.attack()
                 elif(key == "x"  or key =="X"):
                     Eattack = 1
+                    #print("OHHHHHHHHHHHH")
+                    q.setForEAttack()
                     Etime =  time.time()
 
-                
-            if(Eattack and  time.time() - Etime > 1):
+              
+            if(Eattack and  time.time() - Etime >= 1):
+                Eattack =0
                 q.Eagle_attack()
 
 

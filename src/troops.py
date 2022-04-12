@@ -143,6 +143,11 @@ class king(troop):
 class archerQueen(troop):
     damage = 10
     axe_range = 5
+    pos_of_EA_ix=0
+    pos_of_EA_iy=0
+    pos_of_EA_jx=0
+    pos_of_EA_jy=0
+
     last_moved_direc=[0,1]
     def display(self):
         village.village[self.i][self.j]=Fore.MAGENTA+"Q"
@@ -189,11 +194,17 @@ class archerQueen(troop):
             
         for x in arr:
             x.current_health-=self.damage
+
+    def setForEAttack(self):
+        self.pos_of_EA_ix=self.i-4+archerQueen.last_moved_direc[0]*16
+        self.pos_of_EA_iy=self.i+4+1+archerQueen.last_moved_direc[0]*16
+        self.pos_of_EA_jx=self.j-4+archerQueen.last_moved_direc[1]*16
+        self.pos_of_EA_jy=self.j+4+1+archerQueen.last_moved_direc[1]*16
     
     def Eagle_attack(self):
         arr= set()
-        for i in range(self.i-4+archerQueen.last_moved_direc[0]*16,self.i+4+1+archerQueen.last_moved_direc[0]*16):
-            for j in range(self.j-4+archerQueen.last_moved_direc[1]*16,self.j+4+1+archerQueen.last_moved_direc[1]*16):
+        for i in range(self.pos_of_EA_ix,self.pos_of_EA_iy):
+            for j in range(self.pos_of_EA_jx,self.pos_of_EA_jy):
                 if(self.check_boundry(i,j)):
                     obj =village.village_object[i][j]
                     represent  = village.village[i][j]
@@ -274,13 +285,13 @@ class archers(troop):
                 #print("WHHHHATT")
                 return
 
-            if(cord[0]>self.i and (village.village[self.i+1][self.j]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K' or village.village[self.i+1][self.j][-1]=='Q')):
+            if(cord[0]>self.i and (village.village[self.i+1][self.j]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K' or village.village[self.i+1][self.j][-1]=='Q'or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K' or village.village[self.i+1][self.j][-1]=='A')):
                 self.i+=1
-            if(cord[0]<self.i and (village.village[self.i-1][self.j]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K'or village.village[self.i+1][self.j][-1]=='Q')):
+            if(cord[0]<self.i and (village.village[self.i-1][self.j]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K'or village.village[self.i+1][self.j][-1]=='Q') or village.village[self.i+1][self.j][-1]=='A'):
                 self.i-=1
-            if(cord[1]>self.j and (village.village[self.i][self.j+1]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K'  or village.village[self.i+1][self.j][-1]=='Q')):
+            if(cord[1]>self.j and (village.village[self.i][self.j+1]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K'  or village.village[self.i+1][self.j][-1]=='Q') or village.village[self.i+1][self.j][-1]=='A'):
                 self.j+=1
-            if(cord[1]<self.j and (village.village[self.i][self.j-1]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K' or village.village[self.i+1][self.j][-1]=='Q')):
+            if(cord[1]<self.j and (village.village[self.i][self.j-1]== Fore.LIGHTWHITE_EX  + "\u2592" or village.village[self.i+1][self.j][-1]=='B' or village.village[self.i+1][self.j][-1]=='K' or village.village[self.i+1][self.j][-1]=='Q') or village.village[self.i+1][self.j][-1]=='A'):
                 self.j-=1
     
     def attack(self):
@@ -323,6 +334,7 @@ class ballons(troop):
         for _ in range(0,self.step):
             min1=village.n*village.m 
             cord = []
+
             for b in building.defence_build:
                 if not b.destroyed:
                     dist = math.sqrt((b.x+b.center[0]-self.i)**2 + (b.y+b.center[1]-self.j)**2)
@@ -443,6 +455,9 @@ def spawn(key):
        ballons.ballon_obj.append(a)
 k = king(100) 
 q = archerQueen(100)
+
+def Update_build(build,defence_build):
+    [building.build,building.defence_build] = [build,defence_build]
 def reset_troops():
     k.current_health = k.health
     q.current_health = q.health
